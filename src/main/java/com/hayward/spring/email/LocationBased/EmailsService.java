@@ -16,6 +16,11 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This is a user service run in the Rest Class
+ *
+ * @see com.hayward.spring.events.Rest
+ */
 @Service
 @AllArgsConstructor
 public class EmailsService implements EmailSender {

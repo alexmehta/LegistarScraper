@@ -63,7 +63,7 @@ public class EventsBackend {
     void checkingArea() {
         inArea.runService();
     }
-
+    //this enables time fixed rates (@Scheduled) annotation
     @EnableScheduling
     class SchedulingConfiguration {
 

@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 
 import java.sql.*;
 
+/**
+ * This gets all events but location based
+ * and uses the Event class in the package. Miles.mission goes through each event
+ */
 @org.springframework.stereotype.Service
 @AllArgsConstructor
 public class Service {

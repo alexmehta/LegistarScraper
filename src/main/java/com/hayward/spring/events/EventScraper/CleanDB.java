@@ -5,12 +5,17 @@ package com.hayward.spring.events.EventScraper;
 
 import java.sql.*;
 
+/**
+ * Implements SQL tools contract in order to access database
+ * All it does is delete all events from upcoming events (no more truncation)
+ */
 public class CleanDB implements SQLTools {
     Connection connection;
 
     public CleanDB() throws SQLException {
         connection = setConnection();
     }
+
     public void cleanDB() throws SQLException {
         Connection conn = connection;
         Statement stmt = null;

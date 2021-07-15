@@ -1,6 +1,7 @@
 package com.hayward.spring.old;
 
 import com.hayward.spring.events.Classifications.ClassificationRunner;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -10,9 +11,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 public class ReaderClass {
-
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public int RW(File file) throws IOException, SQLException {
         long lines = Files.lines(file.toPath()).count();
         Scanner s = new Scanner(file);
@@ -54,8 +57,6 @@ public class ReaderClass {
 
                 conn.close();
                 System.out.println("Record is inserted in the table successfully..................");
-            } catch (SQLException excep) {
-                excep.printStackTrace();
             } catch (Exception excep) {
                 excep.printStackTrace();
             } finally {
