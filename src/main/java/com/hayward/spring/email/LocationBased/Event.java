@@ -1,5 +1,10 @@
 package com.hayward.spring.email.LocationBased;
 
+/**
+ * @author Alexander Mehta
+ * This is an Event class, it just stores the data when we are looking at emails, you can look up
+ * hibernate persistant classes, it is similar to what I am doing, just not storing it in a database of any kind
+ */
 public class Event {
     private int id;
     private String name;

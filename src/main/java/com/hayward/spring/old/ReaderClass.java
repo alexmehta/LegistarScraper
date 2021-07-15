@@ -1,6 +1,6 @@
 package com.hayward.spring.old;
 
-import com.hayward.spring.events.ClassificationRunner;
+import com.hayward.spring.events.Classifications.ClassificationRunner;
 
 import java.io.*;
 import java.nio.file.Files;

@@ -1,3 +1,7 @@
+/**
+ * This service sends emails after getting the data from other classes in this module
+ */
+
 package com.hayward.spring.email.LocationBased;
 
 import lombok.AllArgsConstructor;
@@ -25,9 +29,8 @@ public class EmailsService implements EmailSender {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
         helper.setSubject(subject);
-        String mess = FileUtils.readFileToString(new File("src/main/resources/location.html"));
-
-        helper.setText(String.format(mess, event, date, location), true);
+        String MessageContent = FileUtils.readFileToString(new File("src/main/resources/location.html"));
+        helper.setText(String.format(MessageContent, event, date, location), true);
         helper.setTo(to);
         helper.setFrom("cityofhayward123@gmail.com");
         mailSender.send(message);

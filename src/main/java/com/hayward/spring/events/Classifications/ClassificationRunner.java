@@ -1,4 +1,8 @@
-package com.hayward.spring.events;
+
+/*
+ */
+
+package com.hayward.spring.events.Classifications;
 
 import de.daslaboratorium.machinelearning.classifier.Classifier;
 import de.daslaboratorium.machinelearning.classifier.bayes.BayesClassifier;
@@ -16,11 +20,8 @@ public class ClassificationRunner {
         for (int i = 0; i < examples.size(); i++) {
             bayes.learn(correspondingtag.get(i), Arrays.asList(examples.get(i).split("\\s")));
         }
-
     }
-
-    static void add() {
-
+    public static void add() {
         String[] example = new String[]{
                 "Council Infrastructure Committee",
                 "Hayward Youth Commission", "Hayward Library Commission",
@@ -68,11 +69,9 @@ public class ClassificationRunner {
             correspondingtag.add(tags[i].toLowerCase());
         }
     }
-
     public String tag(String tag) {
         add();
         load();
-
         final String[] infastructure = "Council Infrastructure Committee".split("\\s");
         bayes.learn("infrastructure", Arrays.asList(infastructure));
         final String[] youth = "Hayward Youth Commission".split("\\s");

@@ -1,4 +1,7 @@
-package com.hayward.spring.events;
+/*
+ */
+
+package com.hayward.spring.events.EventScraper;
 //the point of this class is to find pdf files and get the zoom link with hayward.zoom.us
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.io.IOUtils;

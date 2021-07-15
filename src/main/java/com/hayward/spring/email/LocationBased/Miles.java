@@ -9,12 +9,19 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 
-//This class will check if an event is within a certian radius of the user
+//This class will check if an event is within a certain radius of the user
 @org.springframework.stereotype.Service
 @AllArgsConstructor
 public class Miles {
     private final EmailsService sender;
 
+    /**
+     * @param lat1
+     * @param long1
+     * @param lat2
+     * @param long2
+     * @return Distance between 2 points using the Haversine Meters Equation, find more about it in this link https://en.wikipedia.org/wiki/Haversine_formula
+     */
     public double calculateDistanceInMeters(double lat1, double long1, double lat2,
                                             double long2) {
         return org.apache.lucene.util.SloppyMath.haversinMeters(lat1, long1, lat2, long2);
@@ -53,7 +60,13 @@ public class Miles {
         return false;
     }
 
-    public void insert(int user_id, int event_id) {
+    /**
+     * What this does is it inserts notification
+     * receipts telling us that we sent a user a notification, preventing us from oversending notifications
+     * @param user_id
+     * @param event_id
+     */
+    public void insertNotificationReciept(int user_id, int event_id) {
         Connection conn = null;
         Statement stmt = null;
         try {
@@ -87,7 +100,7 @@ public class Miles {
             if (checkDistance(event, user) && notSent(event.getId(), user.getId())) {
                 //since this should be a notification, we will check if email has already been sent, if not, add to db then send
                 sender.send(user.getEmail(), event.getName() + " is near your location", event.getName(), event.getDate(), event.getLocation());
-                insert(user.getId(), event.getId());
+                insertNotificationReciept(user.getId(), event.getId());
             }
         }
     }
