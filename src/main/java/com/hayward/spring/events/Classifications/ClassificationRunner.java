@@ -1,4 +1,8 @@
-package com.hayward.spring.events;
+
+/*
+ */
+
+package com.hayward.spring.events.Classifications;
 
 import de.daslaboratorium.machinelearning.classifier.Classifier;
 import de.daslaboratorium.machinelearning.classifier.bayes.BayesClassifier;
@@ -6,21 +10,26 @@ import de.daslaboratorium.machinelearning.classifier.bayes.BayesClassifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 //using Bayes Classifier, load some examples and use it when parsing the meeting minutes and details
+
+/**
+ * Bayes Algorithm Dependency is in Pom.xml
+ */
 public class ClassificationRunner {
     public static final Classifier<String, String> bayes =
             new BayesClassifier<String, String>();
     static ArrayList<String> examples = new ArrayList<>();
     static ArrayList<String> correspondingtag = new ArrayList<>();
 
+    //loop through each example
     public static void load() {
         for (int i = 0; i < examples.size(); i++) {
+            //learn each example
             bayes.learn(correspondingtag.get(i), Arrays.asList(examples.get(i).split("\\s")));
         }
-
     }
 
-    static void add() {
-
+    //some examples
+    public static void add() {
         String[] example = new String[]{
                 "Council Infrastructure Committee",
                 "Hayward Youth Commission", "Hayward Library Commission",
@@ -62,7 +71,6 @@ public class ClassificationRunner {
                 "Homelessness",
                 "General Meeting"
         };
-
         for (int i = 0; i < (tags.length + example.length) / 2; i++) {
             examples.add(example[i]);
             correspondingtag.add(tags[i].toLowerCase());
@@ -72,7 +80,7 @@ public class ClassificationRunner {
     public String tag(String tag) {
         add();
         load();
-
+        //extra properties
         final String[] infastructure = "Council Infrastructure Committee".split("\\s");
         bayes.learn("infrastructure", Arrays.asList(infastructure));
         final String[] youth = "Hayward Youth Commission".split("\\s");
@@ -83,12 +91,10 @@ public class ClassificationRunner {
         bayes.learn("general", Arrays.asList(general));
         final String[] airports = "Airport Committee".split("\\s");
         bayes.learn("infrastructure", Arrays.asList(airports));
-
-
         final String[] unknownText1 = tag.split("\\s");
-        bayes.setMemoryCapacity(Integer.MAX_VALUE); // remember the last 500 learned classifications
+        bayes.setMemoryCapacity(Integer.MAX_VALUE); // remember the last 2^31 learned classifications (in memory, of course)
         String classification = bayes.classify(Arrays.asList(unknownText1)).getCategory();
-        bayes.setMemoryCapacity(Integer.MAX_VALUE); // remember the last 500 learned classifications
+        bayes.setMemoryCapacity(Integer.MAX_VALUE); // remember the last 2^31 learned classifications
         //System.out.println(((BayesClassifier<String, String>) bayes).classifyDetailed(Arrays.asList(unknownText1)));
         return classification;
 

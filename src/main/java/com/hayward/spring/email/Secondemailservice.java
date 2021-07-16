@@ -1,3 +1,6 @@
+/*
+ */
+
 package com.hayward.spring.email;
 
 import com.hayward.spring.email.updates.EmailUpdateSender;
@@ -13,6 +16,12 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+/**
+ * @author Alexander Mehta
+ tells that an event is happening using the formal from resources file
+ *
+ */
+
 
 @Service
 @AllArgsConstructor

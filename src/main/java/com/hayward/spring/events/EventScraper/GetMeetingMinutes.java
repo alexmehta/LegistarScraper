@@ -1,6 +1,6 @@
-package com.hayward.spring.events;
-//todo insert links
+package com.hayward.spring.events.EventScraper;
 
+import com.hayward.spring.events.Classifications.ClassificationRunner;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,49 +39,9 @@ public class GetMeetingMinutes {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, SQLException, ParseException {
-        cleanDB();
-        parseTable(8, "https://hayward.legistar.com/Calendar.aspx");
+        parseTable("https://hayward.legistar.com/Calendar.aspx");
         out.close();
     }
-
-    public static void cleanDB() throws SQLException {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (Exception e) {
-//                System.out.println(e);
-            }
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
-//            System.out.println("Connection is created successfully:");
-            stmt = conn.createStatement();
-            String query1 = "DELETE FROM upcomingevents WHERE deleteable=1";
-            PreparedStatement ps = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
-//            System.out.println(query1);
-            ps.executeUpdate();
-            query1 = "DELETE FROM upcomingevents WHERE deleteable=1";
-            stmt = conn.createStatement();
-            stmt.executeUpdate(query1);
-        } catch (Exception excep) {
-            excep.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null)
-                    conn.close();
-            } catch (SQLException ignored) {
-            }
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
-        }
-
-    }
-
 
     static void getTable(String url) throws InterruptedException, IOException {
         //downloads table and renames to info.html
@@ -89,35 +49,24 @@ public class GetMeetingMinutes {
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "C:\\GeckoDriver\\geckodriver.exe");
         // Setting new download directory path
-        Map<String, Object> prefs = new HashMap<String, Object>();
+        Map<String, Object> prefs = new HashMap<>();
         // Use File.separator as it will work on any OS
         prefs.put("download.default_directory",
                 System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "tmp");
-        // Adding cpabilities to ChromeOptions
-        ChromeOptions options = new ChromeOptions();
+        ChromeOptions options = new DefaultOptions().setOptions();
         options.setExperimentalOption("prefs", prefs);
-        // Printing set download directory
-//        System.out.println(options.getExperimentalOption("prefs"));
-        // Launching browser with desired capabilities
-        FirefoxProfile profile = new FirefoxProfile();
-        profile.setAssumeUntrustedCertificateIssuer(false);
         WebDriver driver = new ChromeDriver(options);
         driver.navigate().to("https://hayward.legistar.com/" + url);
-        String downloadFilepath = "C:\\Users\\alex\\Documents\\Programming\\pilotcity-first\\java\\src\\main\\tmp";
-        profile.setPreference("browser.download.dir", downloadFilepath);
-        profile.setPreference("browser.helperapps.neverAsk.saveToDisk", "application/xls");
         try {
             FileUtils.cleanDirectory(new File("src/main/tmp"));
             new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_menuMain\"]/ul/li[2]/a"))).click();
             new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_menuMain\"]/ul/li[2]/div/ul/li[2]/a"))).click();
             new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_menuMain\"]/ul/li[3]/a"))).click();
-
             new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_menuMain\"]/ul/li[3]/div/ul/li[1]/a"))).click();
 
         } catch (Exception e) {
             System.out.println("Exception" + e);
         }
-
         TimeUnit.SECONDS.sleep(2);
         driver.close();
         try {
@@ -125,26 +74,31 @@ public class GetMeetingMinutes {
             File target = new File("src/main/tmp/info.html");
             Files.move(source.toPath(), target.toPath());
         } catch (IOException e) {
-            FileUtils.cleanDirectory(new File("src/main/tmp"));
-            System.out.println("problem: file not found");
+            try {
+                FileUtils.cleanDirectory(new File("src/main/tmp"));
+
+            } catch (IllegalArgumentException exception) {
+                System.out.println("problem: file not found");
+                exception.printStackTrace();
+            }
         }
     }
+
     //insert data into table
-    static int insertData(String name, String date, String time, String location, String urls, String pdf) throws IOException, ParseException {
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+    static int insertData(String name, String date, String time, String location, String urls, String pdf) {
         int id = 0;
         ClassificationRunner runner = new ClassificationRunner();
-        Connection conn = null;
-        Statement stmt = null;
+        Connection conn;
+        Statement stmt;
         try {
+            //this might seem confusing, but it is just calling the dependency for the sql server, just go to after the catch section for the sql code
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             } catch (Exception e) {
-//                    System.out.println(e);
+                e.printStackTrace();
             }
             String url = "jdbc:mysql://localhost:3306/cityofhayward";
             conn = DriverManager.getConnection(url, "devuser", "devpass");
-//                System.out.println("Connection is created successfully:");
             stmt = conn.createStatement();
             String query1 = "INSERT INTO upcomingevents (name,date,time,location,tag,url,pdf) " + "VALUES ('%s','%s','%s','%s','%s','%s','%s')";
             query1 = String.format(query1, name, date, time, location, runner.tag(name), urls, pdf);
@@ -178,13 +132,11 @@ public class GetMeetingMinutes {
             while (resultSet.next()) {
                 id = resultSet.getLong("id");
             }
-
             String query1 = "INSERT INTO meetingminutes (name,tag,event) " + "VALUES ('%s','%s','%s')";
             stmt = conn.createStatement();
             FileUtils.cleanDirectory(new File("src/main/tmp"));
             query1 = String.format(query1, name, tag, id);
             query1 = query1.replace("'", "'");
-
 //            System.out.println(query1);
             stmt.executeUpdate(query1);
 
@@ -213,9 +165,7 @@ public class GetMeetingMinutes {
             Element table = doc.body();
             if (!doc.body().text().equals("NULL")) {
                 Elements rows = table.select("tr");
-                Elements ths = rows.select("td");
                 ClassificationRunner runner = new ClassificationRunner();
-
                 for (Element row : rows) {
                     Elements tds = row.select("td");
                     int i = 0;
@@ -256,9 +206,8 @@ public class GetMeetingMinutes {
         insertData(name, date, time, location, url, agenda.attr("href"));
     }
 
-    static void insertPDF(String url, int id) throws FileNotFoundException, SQLException {
+    static void insertPDF(String url, int id) throws SQLException {
         String urle = "jdbc:mysql://localhost:3306/cityofhayward";
-
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(urle, "devuser", "devpass");
@@ -271,9 +220,7 @@ public class GetMeetingMinutes {
         System.out.println(query);
         out.println(query);
         try {
-            System.out.println("pdf");
             conn = DriverManager.getConnection(urle, "devuser", "devpass");
-            System.out.println("Connection is created successfully:");
             statement = conn.createStatement();
             statement.executeUpdate(query);
         } catch (SQLException throwables) {
@@ -301,16 +248,14 @@ public class GetMeetingMinutes {
 //            System.out.println("Connection is created successfully:");
             stmt = conn.createStatement();
             String query1 = "INSERT INTO upcomingevents (name,date,time,location,tag) " + "VALUES ('%s','%s','%s','%s','%s')";
-
             DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-
             query1 = String.format(query1, name, date, time, location, runner.tag(name));
             System.out.println(query1);
             PreparedStatement ps = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
 //            System.out.println(query1);
             ps.executeUpdate();
-        } catch (Exception excep) {
-            excep.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         } finally {
             try {
                 if (stmt != null)
@@ -325,15 +270,15 @@ public class GetMeetingMinutes {
             }
         }
     }
+
     //goes through table and gets all events
-    public static void parseTable(int num, String url) throws IOException, InterruptedException, ParseException, SQLException {
+    public static void parseTable(String url) throws IOException, ParseException, SQLException, InterruptedException {
         Document doc = Jsoup.connect(url).get();
         Element table = doc.getElementById("ctl00_ContentPlaceHolder1_gridCalendar_ctl00");
         Elements rows = table.select("tr");
         for (int i = 0; i < rows.size(); i++) {
             Element row = rows.get(i);
             Elements columns = row.select("td");
-
             String name = null;
             String date = null;
             String time = null;
@@ -344,7 +289,7 @@ public class GetMeetingMinutes {
                 if (i == 2) time = columns.get(j).text();
                 if (i == 4) location = columns.get(j).text();
                 if (j == 5) {
-                    //get link and then send to webdrivwer
+                    //get link and then send to webdriver
 //                    System.out.println(time);
                     Element atag = columns.get(j).select("a").first();
 //                    System.out.println(atag.attr("href"));
@@ -363,23 +308,12 @@ public class GetMeetingMinutes {
 
             }
         }
-        System.err.println("System.out.printlkasdnklf;sadj;klfasdkl;jf;asldkjf;" +
-                "sda" +
-                "fasd" +
-                "f" +
-                "asdf" +
-                "asd" +
-                "fasd" +
-                "asd" +
-                "f" +
-                "asd");
         doc = Jsoup.parse(getHTML());
         table = doc.getElementById("ctl00_ContentPlaceHolder1_gridCalendar_ctl00");
         rows = table.select("tr");
         for (int i = 0; i < rows.size(); i++) {
             Element row = rows.get(i);
             Elements columns = row.select("td");
-
             String name = null;
             String date = null;
             String time = null;
@@ -390,15 +324,9 @@ public class GetMeetingMinutes {
                 if (i == 2) time = columns.get(j).text();
                 if (i == 4) location = columns.get(j).text();
                 if (j == 5) {
-                    //get link and then send to webdrivwer
-//                    System.out.println(time);
-
+                    //get link and then send to webdriver
                     Element atag = columns.get(j).select("a").first();
-//                    System.out.println(atag.attr("href"));
-                    String urle = atag.attr("href");
-//                    System.out.println(url);
                     if (atag.attr("href").equals("") || !atag.attr("href").startsWith("MeetingDetail")) {
-//                        //  System.out.println("no adj, defaulting to inserting regularly");
                         insertEventNOTNULL(columns.get(0).text(), columns.get(1).text(), columns.get(3).text(), columns.get(4).text());
                     } else {
                         click(atag.attr("href"));
@@ -413,28 +341,14 @@ public class GetMeetingMinutes {
 
     private static String getHTML() throws InterruptedException {
         String html = "";
-
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "C:\\GeckoDriver\\geckodriver.exe");
         // Setting new download directory path
-        Map<String, Object> prefs = new HashMap<String, Object>();
+        Map<String, Object> prefs = new HashMap<>();
         // Use File.separator as it will work on any OS
         prefs.put("download.default_directory",
                 System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "tmp");
-        // Adding cpabilities to ChromeOptions
-        ChromeOptions options = new ChromeOptions();
-        options.setHeadless(true);
-        options.addArguments("--window-size=1920,1080");
-        options.addArguments("--disable-extensions");
-        options.addArguments("--proxy-server='direct://'");
-        options.addArguments("--proxy-bypass-list=*");
-        options.addArguments("--start-maximized");
-        options.addArguments("--headless");
-        options.addArguments("--disable-gpu");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--ignore-certificate-errors");
-
+        ChromeOptions options = new DefaultOptions().setOptions();
         options.setExperimentalOption("prefs", prefs);
         // Launching browser with desired capabilities
         FirefoxProfile profile = new FirefoxProfile();
@@ -456,6 +370,7 @@ public class GetMeetingMinutes {
         return html;
     }
 
+    //this is just a test method, you can ignore it
     public String test() throws InterruptedException {
         return (getHTML());
     }

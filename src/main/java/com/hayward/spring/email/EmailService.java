@@ -1,6 +1,6 @@
 package com.hayward.spring.email;
 
-import com.hayward.spring.email.updates.EmailUpdateSender;
+
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,6 +13,9 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This service is for events that the user has signed up for (notifications)
+ */
 @Service
 @AllArgsConstructor
 public class EmailService implements EmailSender {

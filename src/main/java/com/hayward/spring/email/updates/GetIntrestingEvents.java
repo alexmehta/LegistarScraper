@@ -1,21 +1,29 @@
 package com.hayward.spring.email.updates;
-import com.hayward.spring.email.Secondemailservice;
+
 import com.hayward.spring.email.LocationBased.Event;
+import com.hayward.spring.email.Secondemailservice;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+
+/**
+ * What this does is it just finds events that a user has expressed prior interest in every week
+ * (very basic newsletter)
+ */
 @Service
 @AllArgsConstructor
 public class GetIntrestingEvents {
 
     private final Secondemailservice emailUpdateSender;
+
     public void GenerateEmail(int id) throws MessagingException, IOException {
-        emailUpdateSender.send(getEmail(id),"weekly update",getTags(id),getUsername(id));
+        emailUpdateSender.send(getEmail(id), "weekly update", getTags(id), getUsername(id));
     }
 
     public String getUsername(int id) {
@@ -93,7 +101,6 @@ public class GetIntrestingEvents {
                 java.util.Date dateObject = simpleDateFormat.parse(date);
                 //time + one day
                 long unixTimestamp = Instant.now().getEpochSecond();
-
                 if (unixTimestamp < dateObject.getTime() / 1000) {
                     Event event = new Event();
                     event.setName(statement.getString("name"));

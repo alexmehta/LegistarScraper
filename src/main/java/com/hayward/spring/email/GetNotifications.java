@@ -9,12 +9,16 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 
+/**
+ * Gets notifications from databse
+ */
+
 @Service
 @AllArgsConstructor
 public class GetNotifications {
     private final EmailSender emailSender;
 
-    //}
+    //first tries to find upcoming
     public static boolean upcoming(int eventId) {
         Connection conn = null;
         Statement stmt = null;
@@ -30,9 +34,8 @@ public class GetNotifications {
                 String date = statement.getString("date");
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
                 java.util.Date dateObject = simpleDateFormat.parse(date);
-                //time + one day
+                //unix timestamp + one day
                 long unixTimestamp = Instant.now().getEpochSecond() + 24 * 3600;
-
                 if (unixTimestamp > dateObject.getTime() / 1000) {
                     System.out.println("event is date away");
                     return true;
@@ -54,11 +57,10 @@ public class GetNotifications {
                 se.printStackTrace();
             }
         }
-
         return false;
     }
-    public static String getEventDate(int id) {
 
+    public static String getEventDate(int id) {
         Connection conn = null;
         Statement stmt = null;
         try {
@@ -87,6 +89,8 @@ public class GetNotifications {
         return "Not Found";
 
     }
+
+    //then gets event details
     public static String getEventName(int id) {
         Connection conn = null;
         Statement stmt = null;
@@ -115,10 +119,12 @@ public class GetNotifications {
         }
         return "Not Found";
     }
+
+    //calls query to send email, and update notifications database so we know we have sent an email, and don't send it
+    //again
     public void SendEmail(int event, String email, int id) throws MessagingException, SQLException, IOException {
         String reminder = String.format("Reminder that %s is happening on %s", getEventName(event), getEventDate(event));
-        emailSender.send(email, reminder,getEventName(event),getEventDate(event));
-
+        emailSender.send(email, reminder, getEventName(event), getEventDate(event));
         Connection conn = null;
         Statement stmt = null;
         try {
@@ -153,7 +159,6 @@ public class GetNotifications {
             stmt = conn.createStatement();
             ResultSet statement = stmt.executeQuery("SELECT * FROM notifications WHERE sent = false");
             while (statement.next()) {
-
                 int eventid = statement.getInt("eventid");
                 stmt = conn.createStatement();
                 ResultSet stmts = stmt.executeQuery("SELECT * FROM users WHERE id = " + statement.getInt("userid"));

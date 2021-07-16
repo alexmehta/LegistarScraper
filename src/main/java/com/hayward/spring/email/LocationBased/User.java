@@ -2,21 +2,19 @@ package com.hayward.spring.email.LocationBased;
 
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 
+/**
+ * Similar to the Event class, which you can see some details for
+ *
+ * @see Event events class (similar, but for events)
+ */
+
 public class User {
     private double longitude;
     private double lat;
     private String email;
     private String name;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     private int id;
+    private double miles;
 
     public User(double longitude, double lat, String email, String name, int id, double miles) {
         this.longitude = longitude;
@@ -26,20 +24,6 @@ public class User {
         this.id = id;
         this.miles = miles;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getMiles() {
-        return miles;
-    }
-
-    public void setMiles(double miles) {
-        this.miles = miles;
-    }
-
-    private double miles;
 
     public User(double longitude, double lat, String email, String name, double miles) {
         this.longitude = longitude;
@@ -59,6 +43,22 @@ public class User {
         this.name = name;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public double getMiles() {
+        return miles;
+    }
+
+    public void setMiles(double miles) {
+        this.miles = miles;
+    }
+
     public double getLongitude() {
         return longitude;
     }
@@ -72,12 +72,10 @@ public class User {
     }
 
     public void setLat(double lat) {
-
         this.lat = lat;
     }
 
     public String getEmail() {
-
         return email;
     }
 
@@ -90,6 +88,10 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setName(String first, String last) {
