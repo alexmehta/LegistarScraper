@@ -1,6 +1,10 @@
-package com.hayward.spring.email;
+/*
+ */
+
+package com.hayward.spring.email.test;
 
 
+import com.hayward.spring.email.EmailSender;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,21 +22,21 @@ import java.io.IOException;
  */
 @Service
 @AllArgsConstructor
-public class EmailService implements EmailSender {
+public class TestEmailService implements TestEmailSender {
 
     private final JavaMailSender mailSender;
 
-    @Override
     @Async
-    public void send(String to, String subject, String event, String date) throws MessagingException, IOException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+    public void send(String to, String subject,String message) throws MessagingException, IOException {
+        MimeMessage email = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(email, "utf-8");
         helper.setSubject(subject);
-        String mess = FileUtils.readFileToString(new File("src/main/resources/message.html"));
-        helper.setText(String.format(mess, event, date), true);
+        helper.setText(message);
+
         helper.setTo(to);
         helper.setFrom("cityofhayward123@gmail.com");
-        mailSender.send(message);
-        System.out.println("sent!");
+        mailSender.send(email);
+        System.out.println("email sent");
+
     }
 }

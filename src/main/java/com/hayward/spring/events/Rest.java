@@ -1,12 +1,15 @@
 package com.hayward.spring.events;
 
+import com.hayward.spring.email.test.TestEmailService;
 import com.hayward.spring.events.EventScraper.CleanDB;
 import com.hayward.spring.events.EventScraper.GetMeetingMinutes;
 import com.hayward.spring.events.EventScraper.PDFreader;
+import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,8 +22,17 @@ import static com.hayward.spring.events.EventScraper.GetMeetingMinutes.parseTabl
  * @author Alexander Mehta
  */
 @RestController
+@AllArgsConstructor
 public class Rest {
     //clean database by truncation, get calendar, parse all of the events and
+    private final TestEmailService testEmailService;
+
+
+    @PostMapping("email_test")
+    public String testEmail() throws MessagingException, IOException {
+        testEmailService.send("alexishanmehta@gmail.com", "This is a test message", "Message Text");
+        return "Email has been sent. Check inbox.";
+    }
 
     /**
      * @return String

@@ -33,7 +33,6 @@ public class Secondemailservice implements EmailUpdateSender {
     public void send(String to, String subject, ArrayList<Event> events, String name) throws MessagingException, IOException {
         System.out.println("trying");
         MimeMessage message = mailSender.createMimeMessage();
-
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
         helper.setSubject(subject);
         String mess = FileUtils.readFileToString(new File("src/main/resources/templates/update.html"));

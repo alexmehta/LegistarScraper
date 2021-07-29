@@ -248,7 +248,6 @@ public class GetMeetingMinutes {
 //            System.out.println("Connection is created successfully:");
             stmt = conn.createStatement();
             String query1 = "INSERT INTO upcomingevents (name,date,time,location,tag) " + "VALUES ('%s','%s','%s','%s','%s')";
-            DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
             query1 = String.format(query1, name, date, time, location, runner.tag(name));
             System.out.println(query1);
             PreparedStatement ps = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
