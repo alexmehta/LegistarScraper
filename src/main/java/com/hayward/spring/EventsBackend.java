@@ -21,7 +21,10 @@ public class EventsBackend {
     public static void main(String[] args) {
         SpringApplication.run(EventsBackend.class, args);
     }
+    @Scheduled(fixedRate = 1800*1000)
+    void sendEmails(){
 
+    }
 
 
 
