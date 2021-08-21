@@ -23,8 +23,8 @@ public class GetNotifications {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             String sql = "SELECT date FROM upcomingevents WHERE id = %s";
             sql = String.format(sql, eventId);
@@ -64,8 +64,8 @@ public class GetNotifications {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             ResultSet statement = stmt.executeQuery("SELECT * FROM upcomingevents WHERE id= " + id);
             while (statement.next()) {
@@ -95,8 +95,8 @@ public class GetNotifications {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             ResultSet statement = stmt.executeQuery("SELECT * FROM upcomingevents WHERE id= " + id);
             while (statement.next()) {
@@ -133,8 +133,8 @@ public class GetNotifications {
             } catch (Exception e) {
 //                    System.out.println(e);
             }
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
 //                System.out.println("Connection is created successfully:");
             stmt = conn.createStatement();
             String query1 = "UPDATE notifications SET sent = true WHERE id = %s";
@@ -154,8 +154,8 @@ public class GetNotifications {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             ResultSet statement = stmt.executeQuery("SELECT * FROM notifications WHERE sent = false");
             while (statement.next()) {

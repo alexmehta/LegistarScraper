@@ -1,4 +1,4 @@
-package com.sample;
+package com.hayward.spring.notifications.Entity;
 
 
 public class LocationNotifications {

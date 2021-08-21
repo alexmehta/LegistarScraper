@@ -52,8 +52,8 @@ public class CleanDB implements SQLTools {
 
     @Override
     public Connection setConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/cityofhayward";
-        Connection conn = DriverManager.getConnection(url, "devuser", "devpass");
+        String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+        Connection conn = DriverManager.getConnection(url, "root", "234324324");
         return conn;
     }
 }

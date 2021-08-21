@@ -35,8 +35,8 @@ public class EventsBackend {
 //        Connection conn = null;
 //        Statement stmt = null;
 //        try {
-//            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-//            conn = DriverManager.getConnection(url, "devuser", "devpass");
+//            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+//            conn = DriverManager.getConnection(url, "root", "234324324");
 //            stmt = conn.createStatement();
 //            ResultSet statement = stmt.executeQuery("SELECT * FROM users");
 //            while (statement.next()) {

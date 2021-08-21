@@ -31,8 +31,8 @@ public class Miles {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             String sql = "SELECT Count(*) FROM location_notifications WHERE event_id = %s and user_id = %s";
             sql = String.format(sql, event, user);
@@ -70,8 +70,8 @@ public class Miles {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             String sql = "INSERT INTO location_notifications(event_id,user_id) VALUES (%s,%s)";
             sql = String.format(sql, event_id, user_id);
@@ -118,8 +118,8 @@ public class Miles {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             ResultSet resultSet = stmt.executeQuery("SELECT * FROM upcomingevents where lat is not null");
             while (resultSet.next()) {

@@ -1,6 +1,5 @@
 package com.hayward.spring.notifications.Entity;
 
-
 public class Following {
 
   private long id;

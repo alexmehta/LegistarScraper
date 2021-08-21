@@ -30,8 +30,8 @@ public class GetIntrestingEvents {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             ResultSet statement = stmt.executeQuery("SELECT * FROM users WHERE id= " + id);
             while (statement.next()) {
@@ -59,8 +59,8 @@ public class GetIntrestingEvents {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             ResultSet statement = stmt.executeQuery("SELECT * FROM users WHERE id= " + id);
             while (statement.next()) {
@@ -89,8 +89,8 @@ public class GetIntrestingEvents {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             String sql = "SELECT * FROM upcomingevents WHERE tag in (SELECT tags FROM listtags WHERE listtags.id in (SELECT tag from following WHERE userid=%s))";
             sql = String.format(sql, id);

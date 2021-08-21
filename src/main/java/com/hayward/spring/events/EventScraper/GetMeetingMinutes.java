@@ -97,8 +97,8 @@ public class GetMeetingMinutes {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             String query1 = "INSERT INTO upcomingevents (name,date,time,location,tag,url,pdf) " + "VALUES ('%s','%s','%s','%s','%s','%s','%s')";
             query1 = String.format(query1, name, date, time, location, runner.tag(name), urls, pdf);
@@ -122,8 +122,8 @@ public class GetMeetingMinutes {
             } catch (Exception e) {
                 System.out.println(e);
             }
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
 //            System.out.println("Connection is created successfully:");
             Statement statement = conn.createStatement();
             String query = "SELECT id FROM upcomingevents WHERE id=(SELECT MAX(id) FROM upcomingevents)";
@@ -207,10 +207,10 @@ public class GetMeetingMinutes {
     }
 
     static void insertPDF(String url, int id) throws SQLException {
-        String urle = "jdbc:mysql://localhost:3306/cityofhayward";
+        String urle = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(urle, "devuser", "devpass");
+            conn = DriverManager.getConnection(urle, "root", "234324324");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -220,7 +220,7 @@ public class GetMeetingMinutes {
         System.out.println(query);
         out.println(query);
         try {
-            conn = DriverManager.getConnection(urle, "devuser", "devpass");
+            conn = DriverManager.getConnection(urle, "root", "234324324");
             statement = conn.createStatement();
             statement.executeUpdate(query);
         } catch (SQLException throwables) {
@@ -243,8 +243,8 @@ public class GetMeetingMinutes {
             } catch (Exception e) {
 //                System.out.println(e);
             }
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
 //            System.out.println("Connection is created successfully:");
             stmt = conn.createStatement();
             String query1 = "INSERT INTO upcomingevents (name,date,time,location,tag) " + "VALUES ('%s','%s','%s','%s','%s')";
