@@ -1,6 +1,7 @@
 package com.hayward.spring.email;
 
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.ApiStatus;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -14,6 +15,7 @@ import java.time.Instant;
  */
 
 @Service @Deprecated
+@ApiStatus.ScheduledForRemoval()
 
 @AllArgsConstructor
 public class GetNotifications {

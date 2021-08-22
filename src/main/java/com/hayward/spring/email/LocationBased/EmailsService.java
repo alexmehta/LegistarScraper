@@ -6,6 +6,7 @@ package com.hayward.spring.email.LocationBased;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -23,6 +24,8 @@ import java.io.IOException;
  */
 @Service
 @AllArgsConstructor
+@Deprecated
+@ApiStatus.ScheduledForRemoval()
 public class EmailsService implements EmailSender {
 
     private final JavaMailSender mailSender;

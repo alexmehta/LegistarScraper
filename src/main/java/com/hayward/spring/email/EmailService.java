@@ -3,6 +3,7 @@ package com.hayward.spring.email;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -18,6 +19,7 @@ import java.io.IOException;
  */
 @Service
 @Deprecated
+@ApiStatus.ScheduledForRemoval()
 @AllArgsConstructor
 public class EmailService implements EmailSender {
 

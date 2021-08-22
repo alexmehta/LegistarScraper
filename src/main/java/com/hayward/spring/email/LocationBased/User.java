@@ -1,13 +1,15 @@
 package com.hayward.spring.email.LocationBased;
 
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Similar to the Event class, which you can see some details for
  *
  * @see Event events class (similar, but for events)
  */
-
+@Deprecated
+@ApiStatus.ScheduledForRemoval()
 public class User {
     private double longitude;
     private double lat;

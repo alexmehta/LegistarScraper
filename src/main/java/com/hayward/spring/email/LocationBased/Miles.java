@@ -1,6 +1,7 @@
 package com.hayward.spring.email.LocationBased;
 
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 //This class will check if an event is within a certain radius of the user
 @org.springframework.stereotype.Service
 @AllArgsConstructor
+@Deprecated
+@ApiStatus.ScheduledForRemoval()
 public class Miles {
     private final EmailsService sender;
 

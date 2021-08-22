@@ -3,6 +3,7 @@ package com.hayward.spring.email.updates;
 import com.hayward.spring.email.LocationBased.Event;
 import com.hayward.spring.email.Secondemailservice;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.ApiStatus;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
  * (very basic newsletter)
  */
 @Service
+@ApiStatus.ScheduledForRemoval()
+
 @Deprecated
 @AllArgsConstructor
 public class GetIntrestingEvents {

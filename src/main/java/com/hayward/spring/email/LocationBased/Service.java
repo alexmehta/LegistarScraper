@@ -1,6 +1,7 @@
 package com.hayward.spring.email.LocationBased;
 
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.sql.*;
 
@@ -10,6 +11,8 @@ import java.sql.*;
  */
 @org.springframework.stereotype.Service
 @AllArgsConstructor
+@Deprecated
+@ApiStatus.ScheduledForRemoval()
 public class Service {
     private final Miles miles;
 
