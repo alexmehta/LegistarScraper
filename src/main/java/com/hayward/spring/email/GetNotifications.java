@@ -13,7 +13,8 @@ import java.time.Instant;
  * Gets notifications from databse
  */
 
-@Service
+@Service @Deprecated
+
 @AllArgsConstructor
 public class GetNotifications {
     private final EmailSender emailSender;

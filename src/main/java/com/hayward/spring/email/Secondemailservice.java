@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 
 @Service
+@Deprecated
+
 @AllArgsConstructor
 public class Secondemailservice implements EmailUpdateSender {
 

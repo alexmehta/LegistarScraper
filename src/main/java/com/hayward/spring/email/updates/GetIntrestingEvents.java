@@ -17,6 +17,7 @@ import java.util.ArrayList;
  * (very basic newsletter)
  */
 @Service
+@Deprecated
 @AllArgsConstructor
 public class GetIntrestingEvents {
 

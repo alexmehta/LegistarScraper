@@ -9,6 +9,8 @@ import java.util.ArrayList;
 /**
  * Interface for the email sending of updates
  */
+@Deprecated
+
 public interface EmailUpdateSender {
     void send(String to, String subject, ArrayList<Event> events, String name) throws MessagingException, IOException;
 }

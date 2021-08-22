@@ -17,6 +17,7 @@ import java.io.IOException;
  * This service is for events that the user has signed up for (notifications)
  */
 @Service
+@Deprecated
 @AllArgsConstructor
 public class EmailService implements EmailSender {
 
