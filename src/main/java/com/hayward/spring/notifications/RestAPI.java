@@ -3,6 +3,7 @@
 
 package com.hayward.spring.notifications;
 
+import com.hayward.spring.notifications.Emails.EmailService;
 import com.hayward.spring.notifications.Entity.Notifications;
 import com.hayward.spring.notifications.Entity.Upcomingevents;
 import com.hayward.spring.notifications.Entity.Users;
@@ -24,6 +25,8 @@ import java.util.PriorityQueue;
 @AllArgsConstructor
 public class RestAPI {
     private EntityManagerFactory entityManagerFactory;
+
+    private EmailService emailService;
 
     @PostMapping("notifications/test")
     public String getEvents() {
@@ -67,22 +70,18 @@ public class RestAPI {
                     long eventTime = new SimpleDateFormat("dd/MM/yyyy").parse(upcomingevents.get(i).getDate()).getTime();
                     if (notifications.getSent() == 0 && eventTime >= time && eventTime <= time2) {
                         //get user details
-                        Users user = null;
                         for (int j = 0; j < users.size(); j++) {
-                            if (users.get(j).getId()==notifications.getUserid()){
+                            if (users.get(j).getId() == notifications.getUserid()) {
                                 //send email with user details
-
-
+                                emailService.send(users.get(j), upcomingevents.get(i).getName() + " at " + upcomingevents.get(i).getLocation() + " soon", upcomingevents.get(i));
                                 break;
                             }
                         }
-
                         //say notification is sent
                         notifications.setSent(0);
                         Session session = sessionFactory.openSession();
                         session.save(notifications);
                         session.close();
-
                     }
                 }
             }
