@@ -19,6 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.PriorityQueue;
 
 @RestController
@@ -60,15 +61,26 @@ public class RestAPI {
         ArrayList<Upcomingevents> upcomingevents = main.getUpcomingEvents();
         PriorityQueue<Notifications> Queue = main.getNotifications();
         //queue of all notifications
+        System.out.println(Queue);
         while (!Queue.isEmpty()) {
             //process a notification and find the upcoming event
             Notifications notifications = Queue.poll();
+            if (notifications.getSent()==1){
+                continue;
+            }
             for (int i = 0; i < upcomingevents.size(); i++) {
-                if (upcomingevents.get(i).getId() == notifications.getId()) {
+                if (upcomingevents.get(i).getId() == notifications.getEventid()) {
+
+                    System.out.println("passed id check");
+                    System.out.println(upcomingevents.get(i));
                     long time = System.currentTimeMillis() / (24 * 3600 * 1000) * (24 * 3600 * 1000);
-                    long time2 = time + 24 * 3600 * 1000;
-                    long eventTime = new SimpleDateFormat("dd/MM/yyyy").parse(upcomingevents.get(i).getDate()).getTime();
+                    long time2 = time + (24 * 3600 * 1000);
+                    Date date = new SimpleDateFormat("MM/dd/yyyy").parse(upcomingevents.get(i).getDate());
+                    long eventTime = date.getTime();
+                    System.out.println(eventTime);
+                    System.out.println(time2);
                     if (notifications.getSent() == 0 && eventTime >= time && eventTime <= time2) {
+                        System.out.println("passed time check");
                         //get user details
                         for (int j = 0; j < users.size(); j++) {
                             if (users.get(j).getId() == notifications.getUserid()) {
@@ -77,9 +89,9 @@ public class RestAPI {
                                 break;
                             }
                         }
-                        //say notification is sent
-                        notifications.setSent(0);
                         Session session = sessionFactory.openSession();
+                        //say notification is sent
+                        notifications.setSent(1);
                         session.save(notifications);
                         session.close();
                     }

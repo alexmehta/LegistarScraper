@@ -1,6 +1,5 @@
 package com.hayward.spring.events;
 
-import com.hayward.spring.email.test.TestEmailService;
 import com.hayward.spring.events.EventScraper.CleanDB;
 import com.hayward.spring.events.EventScraper.GetMeetingMinutes;
 import com.hayward.spring.events.EventScraper.PDFreader;
@@ -24,15 +23,6 @@ import static com.hayward.spring.events.EventScraper.GetMeetingMinutes.parseTabl
 @RestController
 @AllArgsConstructor
 public class Rest {
-    //clean database by truncation, get calendar, parse all of the events and
-    private final TestEmailService testEmailService;
-
-
-    @PostMapping("email_test")
-    public String testEmail() throws MessagingException, IOException {
-        testEmailService.send("alexishanmehta@gmail.com", "This is a test message", "Message Text");
-        return "Email has been sent. Check inbox.";
-    }
 
     /**
      * @return String

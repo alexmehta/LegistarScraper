@@ -3,10 +3,7 @@ package com.hayward.spring.notifications.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.processing.Generated;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "upcomingevents")
@@ -23,7 +20,8 @@ public class Upcomingevents implements Comparable<Upcomingevents>{
   private String time;
   private String date;
   private String name;
-  @Id @GeneratedValue
+  @Id()
+  @GeneratedValue(strategy= GenerationType.AUTO)
   private long id;
 
 
