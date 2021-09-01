@@ -36,8 +36,8 @@ public class PDFreader {
         Connection conn = null;
         Statement stmt = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/cityofhayward";
-            conn = DriverManager.getConnection(url, "devuser", "devpass");
+            String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+            conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             String sql = "SELECT * FROM upcomingevents WHERE id = %s";
             sql = String.format(sql, id);
@@ -83,7 +83,7 @@ public class PDFreader {
 
     //update the sql row for zoom link
     public static void Update(String url, int id) {
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cityofhayward", "devuser", "devpass");
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://20.94.243.188:3306/cityofhayward", "root", "234324324");
 
         ) {
 

@@ -25,8 +25,8 @@ public class ReaderClass {
         System.out.println(number);
         System.out.println(number * 7);
         String host = "jdbc:sqlserver://server;databaseName=db";
-        String username = "devuser";
-        String password = "devpass";
+        String username = "root";
+        String password = "234324324";
         ClassificationRunner runner = new ClassificationRunner();
 
         PrintWriter printWriter = new PrintWriter(new File("src/main/tmp/test.txt"));
@@ -43,8 +43,8 @@ public class ReaderClass {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                String url = "jdbc:mysql://localhost:3306/cityofhayward";
-                conn = DriverManager.getConnection(url, "devuser", "devpass");
+                String url = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
+                conn = DriverManager.getConnection(url, "root", "234324324");
                 System.out.println("Connection is created successfully:");
                 stmt =conn.createStatement();
                 String tag = runner.tag(strings.get(0));
