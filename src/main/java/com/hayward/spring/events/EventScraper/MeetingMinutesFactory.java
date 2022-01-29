@@ -1,6 +1,5 @@
 package com.hayward.spring.events.EventScraper;
 
-import com.hayward.spring.events.Classifications.ClassificationRunner;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,23 +13,20 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.sql.*;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class GetMeetingMinutes {
-    public static PrintWriter out;
+public class MeetingMinutesFactory {
+    public PrintWriter out;
+    Properties p = new Properties();
 
-    static {
+    {
         try {
             out = new PrintWriter("log.txt");
         } catch (FileNotFoundException e) {
@@ -38,14 +34,18 @@ public class GetMeetingMinutes {
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException, SQLException, ParseException {
-        parseTable("https://hayward.legistar.com/Calendar.aspx");
-        out.close();
+    public MeetingMinutesFactory() throws FileNotFoundException {
+        try {
+            p.load(new FileInputStream("properties.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    static void getTable(String url) throws InterruptedException, IOException {
+    void getTable(String url) throws InterruptedException, IOException {
+        Properties p = new Properties();
+        p.load(new FileInputStream("properties.properties"));
         //downloads table and renames to info.html
-        //get excel doc
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "C:\\GeckoDriver\\geckodriver.exe");
         // Setting new download directory path
@@ -56,7 +56,7 @@ public class GetMeetingMinutes {
         ChromeOptions options = new DefaultOptions().setOptions();
         options.setExperimentalOption("prefs", prefs);
         WebDriver driver = new ChromeDriver(options);
-        driver.navigate().to("https://hayward.legistar.com/" + url);
+        driver.navigate().to(p.getProperty("baseurl") + url);
         try {
             FileUtils.cleanDirectory(new File("src/main/tmp"));
             new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_menuMain\"]/ul/li[2]/a"))).click();
@@ -85,9 +85,8 @@ public class GetMeetingMinutes {
     }
 
     //insert data into table
-    static int insertData(String name, String date, String time, String location, String urls, String pdf) {
+    int insertData(String name, String date, String time, String location, String urls, String pdf) {
         int id = 0;
-        ClassificationRunner runner = new ClassificationRunner();
         Connection conn;
         Statement stmt;
         try {
@@ -101,7 +100,7 @@ public class GetMeetingMinutes {
             conn = DriverManager.getConnection(url, "root", "234324324");
             stmt = conn.createStatement();
             String query1 = "INSERT INTO upcomingevents (name,date,time,location,tag,url,pdf) " + "VALUES ('%s','%s','%s','%s','%s','%s','%s')";
-            query1 = String.format(query1, name, date, time, location, runner.tag(name), urls, pdf);
+            query1 = String.format(query1, name, date, time, location, id, urls, pdf);
             PreparedStatement ps = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
             ps.executeUpdate();
         } catch (Exception excep) {
@@ -113,7 +112,7 @@ public class GetMeetingMinutes {
 
     }
 
-    static void insertevents(String name, String tag, int event) {
+    void insertevents(String name, String tag, int event) {
         Connection conn = null;
         Statement stmt = null;
         try {
@@ -158,14 +157,13 @@ public class GetMeetingMinutes {
         }
     }
 
-    static void parse(File file, int id) {
+    void parse(File file, int id) {
         Document doc = null;
         try {
             doc = Jsoup.parse(file, null);
             Element table = doc.body();
             if (!doc.body().text().equals("NULL")) {
                 Elements rows = table.select("tr");
-                ClassificationRunner runner = new ClassificationRunner();
                 for (Element row : rows) {
                     Elements tds = row.select("td");
                     int i = 0;
@@ -173,7 +171,7 @@ public class GetMeetingMinutes {
                     for (Element td : tds) {
                         if (i == 3) {
                             type = td.text();
-                            insertevents(type, runner.tag(type), id);
+                            insertevents(type, "", id);
                             break;
                         }
                         i++;
@@ -188,8 +186,8 @@ public class GetMeetingMinutes {
 
     }
 
-    static void click(String url) throws IOException, InterruptedException, ParseException, SQLException {
-        Document doc = Jsoup.connect("https://hayward.legistar.com/" + url).get();
+    void click(String url) throws IOException, InterruptedException, ParseException, SQLException {
+        Document doc = Jsoup.connect(p.getProperty("baseurl") + url).get();
         Element meetingitems = doc.getElementsByClass("rtsUL").get(1);
         System.out.println(meetingitems.text());
         if (!meetingitems.text().equals("Meeting Items (0)")) {
@@ -206,7 +204,7 @@ public class GetMeetingMinutes {
         insertData(name, date, time, location, url, agenda.attr("href"));
     }
 
-    static void insertPDF(String url, int id) throws SQLException {
+    void insertPDF(String url, int id) throws SQLException {
         String urle = "jdbc:mysql://20.94.243.188:3306/cityofhayward";
         Connection conn = null;
         try {
@@ -230,8 +228,7 @@ public class GetMeetingMinutes {
 
     }
 
-    static void insertEventNOTNULL(String name, String date, String time, String location) {
-        ClassificationRunner runner = new ClassificationRunner();
+    void insertMinData(String name, String date, String time, String location) {
         Connection conn = null;
         Statement stmt = null;
         if (time.equals("")) {
@@ -248,7 +245,7 @@ public class GetMeetingMinutes {
 //            System.out.println("Connection is created successfully:");
             stmt = conn.createStatement();
             String query1 = "INSERT INTO upcomingevents (name,date,time,location,tag) " + "VALUES ('%s','%s','%s','%s','%s')";
-            query1 = String.format(query1, name, date, time, location, runner.tag(name));
+            query1 = String.format(query1, name, date, time, location, "base tag");
             System.out.println(query1);
             PreparedStatement ps = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
 //            System.out.println(query1);
@@ -271,7 +268,7 @@ public class GetMeetingMinutes {
     }
 
     //goes through table and gets all events
-    public static void parseTable(String url) throws IOException, ParseException, SQLException, InterruptedException {
+    public void parseTable(String url) throws IOException, ParseException, SQLException, InterruptedException {
         Document doc = Jsoup.connect(url).get();
         Element table = doc.getElementById("ctl00_ContentPlaceHolder1_gridCalendar_ctl00");
         Elements rows = table.select("tr");
@@ -297,7 +294,7 @@ public class GetMeetingMinutes {
                     if (atag.attr("href").equals("") || !atag.attr("href").startsWith("MeetingDetail")) {
 //                        //  System.out.println("no adj, defaulting to inserting regularly");
                         //inserts event if no meeting minutes
-                        insertEventNOTNULL(columns.get(0).text(), columns.get(1).text(), columns.get(3).text(), columns.get(4).text());
+                        insertMinData(columns.get(0).text(), columns.get(1).text(), columns.get(3).text(), columns.get(4).text());
                     } else {
                         //simulates click of the meeting minutes
                         click(atag.attr("href"));
@@ -326,7 +323,7 @@ public class GetMeetingMinutes {
                     //get link and then send to webdriver
                     Element atag = columns.get(j).select("a").first();
                     if (atag.attr("href").equals("") || !atag.attr("href").startsWith("MeetingDetail")) {
-                        insertEventNOTNULL(columns.get(0).text(), columns.get(1).text(), columns.get(3).text(), columns.get(4).text());
+                        insertMinData(columns.get(0).text(), columns.get(1).text(), columns.get(3).text(), columns.get(4).text());
                     } else {
                         click(atag.attr("href"));
                     }
@@ -338,7 +335,7 @@ public class GetMeetingMinutes {
 
     }
 
-    private static String getHTML() throws InterruptedException {
+    private String getHTML() throws InterruptedException {
         String html = "";
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "C:\\GeckoDriver\\geckodriver.exe");
@@ -353,7 +350,7 @@ public class GetMeetingMinutes {
         FirefoxProfile profile = new FirefoxProfile();
         profile.setAssumeUntrustedCertificateIssuer(false);
         WebDriver driver = new ChromeDriver(options);
-        driver.navigate().to("https://hayward.legistar.com/");
+        driver.navigate().to(p.getProperty("baseurl"));
         String downloadFilepath = "C:\\Users\\alex\\Documents\\Programming\\pilotcity-first\\java\\src\\main\\tmp";
         profile.setPreference("browser.download.dir", downloadFilepath);
         profile.setPreference("browser.helperapps.neverAsk.saveToDisk", "application/xls");

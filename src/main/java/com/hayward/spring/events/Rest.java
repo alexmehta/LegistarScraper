@@ -1,20 +1,18 @@
 package com.hayward.spring.events;
 
 import com.hayward.spring.events.EventScraper.CleanDB;
-import com.hayward.spring.events.EventScraper.GetMeetingMinutes;
-import com.hayward.spring.events.EventScraper.PDFreader;
+import com.hayward.spring.events.EventScraper.MeetingMinutesFactory;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.MessagingException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-
-import static com.hayward.spring.events.EventScraper.GetMeetingMinutes.parseTable;
+import java.util.Properties;
 //rest controller
 
 /**
@@ -38,48 +36,17 @@ public class Rest {
      */
     @PostMapping("/update")
     public String getvalues() throws InterruptedException, SQLException, ParseException, IOException {
+        Properties p = new Properties();
+        p.load(new FileInputStream("properties.properties"));
         CleanDB cleaner = new CleanDB();
         cleaner.cleanDB();
         System.err.println("Cleaned DB");
-        String calendar = "https://hayward.legistar.com/Calendar.aspx";
-        parseTable(calendar);
+        String calendar = p.getProperty("baseurl") + "/Calendar.aspx";
+        MeetingMinutesFactory g = new MeetingMinutesFactory();
+        g.parseTable(calendar);
         FileUtils.cleanDirectory(new File("src/main/tmp"));
-        //todo change this from looping 10,000 times to instead finding size of database and searching using that as I.
-        for (int i = 0; i < 10000; i++) {
-            PDFreader pdFreader = new PDFreader();
-            pdFreader.attemptZoomLink(i);
-        }
-        return "Complete: inserted values";
-    }
-
-    /**
-     * @return this function will just update zoom links and returns also a done callback
-     * @throws PDFreader exceptions
-     * @see PDFreader pdfreader class
-     */
-    @PostMapping("/update/zoom")
-    public String getZoom() {
-        //what it ends up having to do is parsing every id up to 10000, in the future, it is better to do this in any other way
-        //refer to the getValues method comment
-        for (int i = 0; i < 10000; i++) {
-            PDFreader pdFreader = new PDFreader();
-            pdFreader.attemptZoomLink(i);
-        }
         return "done";
     }
 
-    //
-    @PostMapping("/test")
-    public String testing() throws IOException, InterruptedException, SQLException, ParseException {
-        GetMeetingMinutes getMeetingMinutes = new GetMeetingMinutes();
-        return getMeetingMinutes.test();
-    }
-
-    @PostMapping("/test2")
-    public String test2() {
-        PDFreader pdFreader = new PDFreader();
-        pdFreader.attemptZoomLink(52);
-        return "52";
-    }
 
 }
